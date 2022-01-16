@@ -2,7 +2,6 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 import excelimport as ei
-import time
 
 #path where is stored chrome driver
 PATH = Service(r"C:\Users\HP\PycharmProjects\Testing-tool\chrome-driver\chromedriver.exe")
@@ -19,8 +18,12 @@ class Steps:
             elif keys == "URL":
                 self.gourl()
                 pass
+            elif keys == "End":
+                print("ano")
+                pass
+            else:
+                continue
             pass
-        self.driver.quit()
         pass
     def chosebrowser(self):
         for keys, values in config.items():
@@ -37,9 +40,10 @@ class Steps:
             pass
         pass
     pass
-Steps().actions()
 
+testcase = Steps()
 
+testcase.actions()
 
 
 
