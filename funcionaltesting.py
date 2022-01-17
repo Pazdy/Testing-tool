@@ -3,6 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 import excelimport as ei
+import time
 
 #path where is stored chrome driver
 PATH = Service(r"C:\Users\HP\PycharmProjects\Testing-tool\chrome-driver\chromedriver.exe")
@@ -20,11 +21,16 @@ class Steps:
                 self.gourl()
                 pass
             elif keys == "Search": # id(unique), name(usually unique), class(not always unique), Tag
-                print("ano")
                 self.searchbar()
                 pass
+            elif keys == "Whatsearch":
+                self.whatsearch()
+                pass
+            elif keys == "Button":
+                self.button()
             elif keys == "End":
-                print("ano")
+#                time.sleep(5)
+#                self.driver.quit()
                 pass
             else:
                 continue
@@ -48,9 +54,22 @@ class Steps:
         for keys, values in config.items():
             if keys == "Search":
                 self.searchbox = self.driver.find_element(By.XPATH, value=values)
-                self.searchbox.send_keys("Mobil")
             else:
                 continue
+    def whatsearch(self):
+        for keys, values in config.items():
+            if keys == "Whatsearch":
+                self.searchbox.send_keys(values)
+            else:
+                continue
+            pass
+        pass
+    def button(self):
+        for keys, values in config.items():
+            if keys == "Button":
+                self.click = self.driver.find_element(By.XPATH, value= values)
+                time.sleep(5)
+                self.click.click()
     pass
 
 testcase = Steps().actions()
