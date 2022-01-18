@@ -2,80 +2,99 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-import excelimport as ei
+from excelimport import configuration
 import time
 
 #path where is stored chrome driver
 PATH = Service(r"C:\Users\HP\PycharmProjects\Testing-tool\chrome-driver\chromedriver.exe")
 
-#configuration from excel in dict
-config = ei.actarg
-
 class Steps:
     def actions(self):
-        for keys in config:
-            if keys == "Browser":
-                self.chosebrowser()
+        for step in range(len(configuration)):
+            for action in configuration[step]:
+                if action == "Browser":
+                    self.chosebrowser()
+                    pass
+                elif action == "URL":
+                    self.gourl()
+                    pass
+                elif action == "Search":
+                    self.searchbar()
+                    pass
+                elif action == "Button":
+                    self.button()
+                    pass
+                elif action == "End":
+                    time.sleep(5)
+                    self.driver.quit()
+                    pass
+                else:
+                    continue
                 pass
-            elif keys == "URL":
-                self.gourl()
-                pass
-            elif keys == "Search": # id(unique), name(usually unique), class(not always unique), Tag
-                self.searchbar()
-                pass
-            elif keys == "Whatsearch":
-                self.whatsearch()
-                pass
-            elif keys == "Button":
-                self.button()
-            elif keys == "End":
-#                time.sleep(5)
-#                self.driver.quit()
-                pass
-            else:
-                continue
-            pass
         pass
     def chosebrowser(self):
-        for keys, values in config.items():
-            if values == "Chrome":
-                self.driver = webdriver.Chrome(service=PATH)
+        for step in range(len(configuration)):
+            for action in configuration[step]:
+                if action == "Chrome":
+                    self.driver = webdriver.Chrome(service=PATH)
+                else:
+                    continue
                 pass
             pass
         pass
     def gourl(self):
-        for keys, values in config.items():
-            if keys == "URL":
-                self.gurl =self.driver.get(url=values)
+        for step in range(len(configuration)):
+            for action in configuration[step]:
+                if action == "URL":
+                    self.gurl = self.driver.get(url=configuration[step][1])
+                    pass
+                else:
+                    continue
                 pass
             pass
         pass
     def searchbar(self):
-        for keys, values in config.items():
-            if keys == "Search":
-                self.searchbox = self.driver.find_element(By.XPATH, value=values)
-            else:
-                continue
-    def whatsearch(self):
-        for keys, values in config.items():
-            if keys == "Whatsearch":
-                self.searchbox.send_keys(values)
-            else:
-                continue
+        for step in range(len(configuration)):
+            for action in configuration[step]:
+                if action == "Search":
+                    self.searchbox = self.driver.find_element(By.XPATH, value=configuration[step][1])
+                    self.searchbox.send_keys(configuration[step][2])
+                else:
+                    continue
+    def button(self):
+        for step in range(len(configuration)):
+            for action in configuration[step]:
+
+                if action == "Button":
+                    print(configuration[step][1])
+                    if configuration[step][1] == "XPath":
+                        self.click = self.driver.find_element(By.XPATH, value= configuration[step][2])
+                        time.sleep(3)
+                        self.click.click()
+
+                    elif configuration[step][1] == "ID":
+                        self.click = self.driver.find_element(By.ID, value= configuration[step][2])
+                        time.sleep(3)
+                        self.click.click()
+
+                    elif configuration[step][1] == "Class":
+                        self.click = self.driver.find_element(By.CLASS_NAME, value= configuration[step][2])
+                        time.sleep(3)
+                        self.click.click()
+
+                    else:
+                        print("You put wrong element in configuration")
+                else:
+                    continue
+                    pass
+                pass
             pass
         pass
-    def button(self):
-        for keys, values in config.items():
-            if keys == "Button":
-                self.click = self.driver.find_element(By.XPATH, value= values)
-                time.sleep(5)
-                self.click.click()
     pass
 
 testcase = Steps().actions()
 
-
-
+# id(unique), name(usually unique), class(not always unique), Tag
 
 
 
