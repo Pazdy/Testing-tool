@@ -1,6 +1,6 @@
 import pandas as pd
 
-#importing CSV file with configuration
+#importing excel file with configuration
 df = pd.read_excel(r"C:\Users\HP\PycharmProjects\Testing-tool\excel\configuration.xlsx")
 
 # df(configuration) putted to the nested list every step represents one column
