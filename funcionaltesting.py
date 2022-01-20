@@ -2,6 +2,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
 from excelimport import configuration
 import time
 
@@ -31,8 +32,17 @@ class Testcase:
                     self.searchbar()
                     pass
                 elif action == "Button":
-                    self.button()
+                    time.sleep(3)
+                    self.clicks()
                     pass
+                elif action == "Select":
+                    pass
+                elif action == "Back":
+                    self.back()
+                elif action == "Forward":
+                    self.forward()
+                elif action == "Clear":
+                    self.clear()
                 elif action == "End":
                     time.sleep(5)
                     self.driver.quit()
@@ -77,7 +87,7 @@ class Testcase:
 
     # button method that first find element to click then click
 
-    def button(self):
+    def clicks(self):
         self.locators()
         self.element = self.locator
         time.sleep(3)
@@ -113,10 +123,28 @@ class Testcase:
         else:
             print("Error Locators")
         pass
+
+    def select(self):
+        self.locators()
+        self.element = self.locator
+        pass
     pass
 
+    def back(self):
+        for i in range(int(configuration[self.step][1])):
+            self.driver.back()
+        pass
+    pass
+
+    def forward(self):
+        for i in range(int(configuration[self.step][1])):
+            self.driver.forward()
+        pass
+    pass
+
+    def clear(self):
+        self.searchbox.clear()
 
 Testcase().testexcecution()
-
 
 # id(unique), name(usually unique), class(not always unique), Tag
