@@ -2,7 +2,8 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from excelimport import configuration
 import time
 
@@ -12,13 +13,14 @@ PATH = Service(r"C:\Users\HP\PycharmProjects\Testing-tool\chrome-driver\chromedr
 # class Test_case stands for logic of program (store all methods)
 
 
-class Testcase:
+class Testcases():
     # testexecution method works with nested lists-> every nested list represents one step that needs to be processed
-    def testexcecution(self):
+    def test_excecutions(self):
         # looping over all steps in the configuration
         for step in range(len(configuration)):
             # looping over all actions in step
             for action in configuration[step]:
+                print(action)
                 # catches step you are work with
                 self.step = step
                 # what action should be processed
@@ -44,9 +46,12 @@ class Testcase:
                 elif action == "Clear":
                     self.clear()
                 elif action == "End":
-                    time.sleep(5)
                     self.driver.quit()
                     pass
+                elif action == "Wait":
+                    self.wait()
+                elif action == "Title":
+                    self.title()
                 else:
                     continue
                 pass
@@ -88,42 +93,51 @@ class Testcase:
     # button method that first find element to click then click
 
     def clicks(self):
-        self.locators()
-        self.element = self.locator
-        time.sleep(3)
-        self.element.click()
+        try:
+            self.locators()
+            self.element = self.locator
+            self.element.click()
+        except:
+            self.driver.quit()
+            print("Spatný locator")
 
     # locators method decide according to configuration by which element gonna be used for searching
     # and also takes value for it
 
     def locators(self):
         if configuration[self.step][1] == "XPath":
-            self.locator = self.driver.find_element(By.XPATH, value=configuration[self.step][2])
+            self.locator = WebDriverWait(self.driver, 3).until(
+            EC.element_to_be_clickable((By.XPATH, configuration[self.step][2])))
 
         elif configuration[self.step][1] == "ID":
-            self.locator = self.driver.find_element(By.ID, value=configuration[self.step][2])
+            self.locator = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.ID, configuration[self.step][2])))
 
         elif configuration[self.step][1] == "Class":
-            self.locator = self.driver.find_element(By.CLASS_NAME, value=configuration[self.step][2])
+            self.locator = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.CLASS_NAME, configuration[self.step][2])))
 
         elif configuration[self.step][1] == "Link":
-            self.locator = self.driver.find_element(By.LINK_TEXT, value=configuration[self.step][2])
+            self.locator = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.LINK_TEXT, configuration[self.step][2])))
 
         elif configuration[self.step][1] == "Name":
-            self.locator = self.driver.find_element(By.NAME, value=configuration[self.step][2])
+            self.locator = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.NAME, configuration[self.step][2])))
 
         elif configuration[self.step][1] == "Tag":
-            self.locator = self.driver.find_element(By.TAG_NAME, value=configuration[self.step][2])
+            self.locator = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.TAG_NAME, configuration[self.step][2])))
 
         elif configuration[self.step][1] == "CSS_Selector":
-            self.locator = self.driver.find_element(By.CSS_SELECTOR, value=configuration[self.step][2])
+            self.locator = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, configuration[self.step][2])))
 
         elif configuration[self.step][1] == "Partial_Link":
-            self.locator = self.driver.find_element(By.PARTIAL_LINK_TEXT, value=configuration[self.step][2])
+            self.locator = WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, configuration[self.step][2])))
         else:
             print("Error Locators")
-        pass
-
     def select(self):
         self.locators()
         self.element = self.locator
@@ -143,8 +157,18 @@ class Testcase:
     pass
 
     def clear(self):
-        self.searchbox.clear()
+       self.clearence = self.searchbox.clear()
 
-Testcase().testexcecution()
+    def wait(self):
+        self.waiting = time.sleep(configuration[self.step][1])
+
+    def title(self):
+        if configuration[self.step][1] == self.driver.title:
+            self.titleO = print("Y")
+        else:
+            self.titleO = print("N")
+
+
+Testcases().test_excecutions()
 
 # id(unique), name(usually unique), class(not always unique), Tag
