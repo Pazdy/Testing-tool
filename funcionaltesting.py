@@ -90,10 +90,11 @@ class Testcases():
         # If first two steps will not be "Browser" and "URL" else will be execute
         else:
             self.result.append("Počáteční krok musí být Browser a následovat musí URL! Pro nápovědu projdi dokumentaci.")
+            pass
+        self.result_file()
 
     # importing result of test/s to the excel named result_file.xlsx also runs test_execution method
     def result_file(self):
-        self.test_excecutions()
         self.result_import = pd.DataFrame([self.result]).to_excel(r'C:\Users\HP\PycharmProjects\Testing-tool\excel\result_file.xlsx')
         pass
 
@@ -199,3 +200,6 @@ class Testcases():
             self.title = print("N")
 
 # id(unique), name(usually unique), class(not always unique), Tag
+
+if __name__ == '__main__':
+    Testcases().test_excecutions()
