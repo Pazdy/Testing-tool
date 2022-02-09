@@ -4,22 +4,17 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from excelimport import configuration
 import pandas as pd
 import time
-
-# path where is stored chrome driver
-PATH = Service(r"C:\Users\HP\PycharmProjects\Testing-tool\chrome-driver\chromedriver.exe")
 
 # class Testcases stands for logic of program (store all methods)
 class Testcases():
 
     # testexecution method execute tests and also store steps which goes through and result/s of test/s
-    def test_excecutions(self):
-
+    def test_excecutions(self, configuration,PATH, OPATH, test):
         # result store steps which where execute, shows in which step was error or if test was processed smoothly
         self.result = []
-
+        self.result.append(test)
         # If config gonna be empty then to the result will be added comment about that
         if configuration == []:
             self.result.append("Konfigurace je prázdná, je potřeba vložit argumenty a parametry dle dokumentace!")
@@ -36,7 +31,17 @@ class Testcases():
                     print(step)
                     if "BROWSER" == step[0].upper():
                         self.result.append(self.step)
-                        self.chosebrowser()
+                        if self.step[1] == "Chrome":
+                            self.driver = webdriver.Chrome(service=Service(PATH))
+
+                        elif self.step[1] == "Edge":
+                            self.driver = webdriver.Edge(service=Service(PATH))
+
+                        elif self.step[1] == "Firefox":
+                            self.driver = webdriver.Firefox(service=Service(PATH))
+
+                        elif self.step[1] == "Safari":
+                            self.driver = webdriver.Safari(service=Service(PATH))
                         pass
                     elif "URL" == step[0].upper():
                         self.result.append(self.step)
@@ -51,10 +56,10 @@ class Testcases():
                         self.clicks()
                     elif "BACK" in step[0].upper():
                         self.result.append(self.step)
-                        self.back()
+                        self.back(configuration)
                     elif "FORWARD" in step[0].upper():
                         self.result.append(self.step)
-                        self.forward()
+                        self.forward(configuration)
                     elif "CLEAR" in step[0].upper():
                         self.result.append(self.step)
                         self.clear()
@@ -86,34 +91,17 @@ class Testcases():
                 elif self.step[0].upper() not in ("BUTTON", "SEARCH"):
                     self.result.append("V kroku " + self.step[0] + " nastala chyba! Pro správné spuštění oprav chybu. Zkontroluj parametry. Pro nápovědu použij dokumentaci.")
                     self.driver.quit()
-
         # If first two steps will not be "Browser" and "URL" else will be execute
         else:
             self.result.append("Počáteční krok musí být Browser a následovat musí URL! Pro nápovědu projdi dokumentaci.")
             pass
-        self.result_file()
-
+        self.append_to_result(OPATH)
     # importing result of test/s to the excel named result_file.xlsx also runs test_execution method
-    def result_file(self):
-        self.result_import = pd.DataFrame([self.result]).to_excel(r'C:\Users\HP\PycharmProjects\Testing-tool\excel\result_file.xlsx')
-        pass
 
-    # method that stands for opening wanted browser filled in config
-    def chosebrowser(self):
-        if self.step[1] == "Chrome":
-            self.driver = webdriver.Chrome(service=PATH)
+    def append_to_result(self, OPATH):
+        self.df_now = pd.read_excel(OPATH)
+        self.df_now.append([self.result]).to_excel(OPATH, index=False)
 
-        elif self.step[1] == "Edge":
-            self.driver = webdriver.Edge(service=PATH)
-
-        elif self.step[1] == "Firefox":
-            self.driver = webdriver.Firefox(service=PATH)
-
-        elif self.step[1] == "Safari":
-            self.driver = webdriver.Safari(service=PATH)
-        pass
-
-    # method that stands for visiting web which put user to config
     def gourl(self):
         self.driver.get(url=self.step[1])
 
@@ -175,13 +163,13 @@ class Testcases():
             self.result.append("Chyba v cestě lokátoru!")
             self.driver.quit()
 
-    def back(self):
+    def back(self, configuration):
         for i in range(int(configuration[self.step][1])):
             self.driver.back()
         pass
     pass
 
-    def forward(self):
+    def forward(self, configuration):
         for i in range(int(configuration[self.step][1])):
             self.driver.forward()
         pass

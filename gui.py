@@ -2,8 +2,9 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 import os
-#import excelimport
-#import funcionaltesting
+import excelimport
+import funcionaltesting
+import pandas as pd
 
 gui = Tk()
 gui.geometry("500x100")
@@ -43,8 +44,8 @@ class Screen():
         self.ofind_path = ttk.Button(master, text="Vyber složku", command=self.ofolder_path)
         self.ofind_path.grid(row=2, column=2)
 
-        # self.start_test = ttk.Button(master, text="Spustit testování", command=self.start_test)
-        # self.start_test.grid(row=3, column=1)
+        self.start_test = ttk.Button(master, text="Spustit testování", command=self.start_test)
+        self.start_test.grid(row=3, column=1)
         pass
 
     def ifolder_path(self):
@@ -62,17 +63,26 @@ class Screen():
 
     def dir_files(self):
         self.files = []
+        self.filenames = []
         for filename in os.listdir(self.ifolder_selected):
+            self.filenames.append(filename)
             f = os.path.join(self.ifolder_selected, filename)
             # checking if it is a file
             if os.path.isfile(f):
                 self.files.append(f)
             else:
                 pass
-    # def start_test(self):
-    #     for file in range(len(self.files)):
-    #         funcionaltesting.Testcases().test_excecutions()
-    #     pass
+#        excelimport.excel_import(self.files)
+
+    def start_test(self):
+        self.create_result = pd.DataFrame().to_excel(excel_writer=self.ofolder_selected + "/result_file.xlsx")
+        for file in self.files:
+            self.number = self.files.index(file)
+            excelimport.e_import(file)
+            self.file = excelimport.e_import.configuration
+            funcionaltesting.Testcases().test_excecutions(configuration=self.file, PATH=self.file_selected, OPATH=self.ofolder_selected + "/result_file.xlsx", test=self.filenames[self.number])
+#        self.test_df = pd.DataFrame({self.filenames})
+        quit()
 
 # if __name__ == '__main__':
 #     s = Screen(gui)
