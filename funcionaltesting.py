@@ -1,4 +1,4 @@
-# importing importante libraries
+# importing important libraries
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -7,12 +7,12 @@ from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
 import time
 
+
 # class Testcases stands for logic of program (store all methods)
 class Testcases():
-
-    # testexecution method execute tests and also store steps which goes through and result/s of test/s
-    def test_excecutions(self, configuration,PATH, OPATH, test):
-        # result store steps which where execute, shows in which step was error or if test was processed smoothly
+    # test execution method execute execute test
+    def test_excecution(self, configuration, path, opath, test):
+        # result store test file, steps, errors
         self.result = []
         self.result.append(test)
         # If config gonna be empty then to the result will be added comment about that
@@ -32,16 +32,16 @@ class Testcases():
                     if "BROWSER" == step[0].upper():
                         self.result.append(self.step)
                         if self.step[1] == "Chrome":
-                            self.driver = webdriver.Chrome(service=Service(PATH))
+                            self.driver = webdriver.Chrome(service=Service(path))
 
                         elif self.step[1] == "Edge":
-                            self.driver = webdriver.Edge(service=Service(PATH))
+                            self.driver = webdriver.Edge(service=Service(path))
 
                         elif self.step[1] == "Firefox":
-                            self.driver = webdriver.Firefox(service=Service(PATH))
+                            self.driver = webdriver.Firefox(service=Service(path))
 
                         elif self.step[1] == "Safari":
-                            self.driver = webdriver.Safari(service=Service(PATH))
+                            self.driver = webdriver.Safari(service=Service(path))
                         pass
                     elif "URL" == step[0].upper():
                         self.result.append(self.step)
@@ -71,8 +71,9 @@ class Testcases():
                     elif "WAIT" in step[0].upper():
                         self.result.append(self.step)
                         self.wait()
-                    elif "TITLE" in step[0].upper(): #think about this
-                        self.title()
+                    # think about this
+                    elif "TITLE" in step[0].upper():
+                        self.check_title()
 
                     # If there will be step which is not recognized then else runs -> result of it saved in result var.
                     else:
@@ -84,23 +85,29 @@ class Testcases():
             except:
                 # If third step in config will be steps that cannot be processed then it will be save to result var.
                 if configuration[2][0].upper() not in ("WAIT", "BUTTON", "SEARCH", "TITLE"):
-                    self.result.append("Krok v konfiguraci musí obsahovat krok, který se dá provést! Pro nápovědu použij dokumentaci.")
+                    self.result.append("Krok v konfiguraci musí obsahovat krok, který se dá provést! "
+                                       "Pro nápovědu použij dokumentaci.")
                     self.driver.quit()
 
                 # If will be error in any step of config then it will be saved in result var.
                 elif self.step[0].upper() not in ("BUTTON", "SEARCH"):
-                    self.result.append("V kroku " + self.step[0] + " nastala chyba! Pro správné spuštění oprav chybu. Zkontroluj parametry. Pro nápovědu použij dokumentaci.")
+                    self.result.append("V kroku " + self.step[0] + " nastala chyba! "
+                                                                   "Pro správné spuštění oprav chybu."
+                                                                   " Zkontroluj parametry."
+                                                                   " Pro nápovědu použij dokumentaci.")
                     self.driver.quit()
         # If first two steps will not be "Browser" and "URL" else will be execute
         else:
-            self.result.append("Počáteční krok musí být Browser a následovat musí URL! Pro nápovědu projdi dokumentaci.")
+            self.result.append("Počáteční krok musí být Browser a následovat musí URL! "
+                               "Pro nápovědu projdi dokumentaci.")
             pass
-        self.append_to_result(OPATH)
-    # importing result of test/s to the excel named result_file.xlsx also runs test_execution method
 
-    def append_to_result(self, OPATH):
-        self.df_now = pd.read_excel(OPATH)
-        self.df_now.append([self.result]).to_excel(OPATH, index=False)
+        self.append_to_result(opath)
+
+    # appending to excel(result file) result of test
+    def append_to_result(self, opath):
+        self.df_now = pd.read_excel(opath)
+        self.df_now.append([self.result]).to_excel(opath, index=False)
 
     def gourl(self):
         self.driver.get(url=self.step[1])
@@ -123,39 +130,40 @@ class Testcases():
             self.result.append("Lokátor nebyl jedinečný!")
     # locators method decide according to configuration by which element gonna be used for searching
     # and also takes value for it ->result of this is unique identificator on the page
+
     def locators(self):
         try:
             if self.step[1].upper() == "XPATH":
-                self.locator = WebDriverWait(self.driver, 5).until(
-                EC.element_to_be_clickable((By.XPATH, self.step[2])))
+                self.locator = WebDriverWait(self.driver, 5).\
+                    until(EC.element_to_be_clickable((By.XPATH, self.step[2])))
 
             elif self.step[1].upper() == "ID":
-                self.locator = WebDriverWait(self.driver, 3).until(
-                EC.element_to_be_clickable((By.ID, self.step[2])))
+                self.locator = WebDriverWait(self.driver, 3).\
+                    until(EC.element_to_be_clickable((By.ID, self.step[2])))
 
             elif self.step[1].upper() == "CLASS":
-                self.locator = WebDriverWait(self.driver, 3).until(
-                EC.element_to_be_clickable((By.CLASS_NAME, self.step[2])))
+                self.locator = WebDriverWait(self.driver, 3).\
+                    until(EC.element_to_be_clickable((By.CLASS_NAME, self.step[2])))
 
             elif self.step[1].upper() == "LINK":
-                self.locator = WebDriverWait(self.driver, 3).until(
-                EC.element_to_be_clickable((By.LINK_TEXT, self.step[2])))
+                self.locator = WebDriverWait(self.driver, 3).\
+                    until(EC.element_to_be_clickable((By.LINK_TEXT, self.step[2])))
 
             elif self.step[1].upper() == "NAME":
-                self.locator = WebDriverWait(self.driver, 3).until(
-                EC.element_to_be_clickable((By.NAME, self.step[2])))
+                self.locator = WebDriverWait(self.driver, 3).\
+                    until(EC.element_to_be_clickable((By.NAME, self.step[2])))
 
             elif self.step[1].upper() == "TAG":
-                self.locator = WebDriverWait(self.driver, 3).until(
-                EC.element_to_be_clickable((By.TAG_NAME, self.step[2])))
+                self.locator = WebDriverWait(self.driver, 3).\
+                    until(EC.element_to_be_clickable((By.TAG_NAME, self.step[2])))
 
             elif self.step[1].upper() == "CSSSELECTOR":
-                self.locator = WebDriverWait(self.driver, 3).until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, self.step[2])))
+                self.locator = WebDriverWait(self.driver, 3).\
+                    until(EC.element_to_be_clickable((By.CSS_SELECTOR, self.step[2])))
 
             elif self.step[1].upper() == "PARTLINK":
-                self.locator = WebDriverWait(self.driver, 3).until(
-                EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, self.step[2])))
+                self.locator = WebDriverWait(self.driver, 3).\
+                    until(EC.element_to_be_clickable((By.PARTIAL_LINK_TEXT, self.step[2])))
             else:
                 self.result.append("Chyba v názvu lokátoru!")
                 self.driver.quit()
@@ -176,18 +184,15 @@ class Testcases():
     pass
 
     def clear(self):
-       self.clearence = self.location.clear()
+        self.location.clear()
 
     def wait(self):
-        self.waiting = time.sleep(int(self.step[1]))
+        time.sleep(int(self.step[1]))
 
     def check_title(self):
         if self.step[1] == self.driver.title:
-            self.title = print("Y")
+            print("Y")
         else:
-            self.title = print("N")
+            print("N")
 
 # id(unique), name(usually unique), class(not always unique), Tag
-
-if __name__ == '__main__':
-    Testcases().test_excecutions()

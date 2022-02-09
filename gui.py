@@ -80,8 +80,7 @@ class Screen():
             self.number = self.files.index(file)
             excelimport.e_import(file)
             self.file = excelimport.e_import.configuration
-            funcionaltesting.Testcases().test_excecutions(configuration=self.file, PATH=self.file_selected, OPATH=self.ofolder_selected + "/result_file.xlsx", test=self.filenames[self.number])
-#        self.test_df = pd.DataFrame({self.filenames})
+            funcionaltesting.Testcases().test_excecution(configuration=self.file, path=self.file_selected, opath=self.ofolder_selected + "/result_file.xlsx", test=self.filenames[self.number])
         quit()
 
 # if __name__ == '__main__':
