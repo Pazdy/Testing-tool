@@ -77,6 +77,7 @@ class Testcases():
 
                     # If there will be step which is not recognized then else runs -> result of it saved in result var.
                     else:
+                        self.result.append(step[0])
                         self.result.append("Neznamý krok! Projdi dokumentaci pro seznam kroků a jejich parametry.")
                         self.driver.quit()
                         break
@@ -124,10 +125,7 @@ class Testcases():
     def clicks(self):
         self.locators()
         self.element = self.locator
-        try:
-            self.element.click()
-        except:
-            self.result.append("Lokátor nebyl jedinečný!")
+        self.element.click()
     # locators method decide according to configuration by which element gonna be used for searching
     # and also takes value for it ->result of this is unique identificator on the page
 

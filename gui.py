@@ -6,46 +6,69 @@ import excelimport
 import funcionaltesting
 import pandas as pd
 
-gui = Tk()
-gui.geometry("500x100")
-gui.title("Funcional testing")
+
+
+
+
 
 
 class Screen():
-    def __init__(self, master):
+    def __init__(self):
+
+        self.gui = Tk()
+        self.gui.geometry("800x300")
+        self.gui.title("Testing tool")
+        self.gui.iconbitmap("logo.ico")
+
         self.dfolderPath = StringVar()
         self.ifolderPath = StringVar()
         self.ofolderPath = StringVar()
 
-        self.driver_text = Label(master, text="Vlož cestu pro driver:")
-        self.driver_text.grid(row=0, column=0)
+        self.left_frame = Frame(self.gui, width=400, height=300)
+        self.left_frame.grid(row=0, column=0)
 
-        self.dpath_field = Entry(master, textvariable=self.dfolderPath)
-        self.dpath_field.grid(row=0, column=1)
+        self.bg = PhotoImage(file="photo.gif", width=400, height=300)
+        self.bg_label = Label(self.left_frame, image=self.bg)
+        self.bg_label.grid(row=0, column=0)
 
-        self.dfind_path = ttk.Button(master, text="Vyber driver", command=self.dfolder_path)
-        self.dfind_path.grid(row=0, column=2)
-        #
-        self.input_text = Label(master, text="Vlož cestu s testovacími případy:")
-        self.input_text.grid(row=1, column=0)
+        self.right_frame = Frame(self.gui, width=400, height=300, bg="white")
+        self.right_frame.grid(row=0, column=1)
 
-        self.ipath_field = Entry(master, textvariable=self.ifolderPath)
-        self.ipath_field.grid(row=1, column=1)
+        self.logo = PhotoImage(file="logo.gif", width=75, height=75)
+        self.logo_label = Label(self.right_frame, image=self.logo, bd=0)
+        self.logo_label.place(x=285, y=215)
 
-        self.ifind_path = ttk.Button(master, text="Vyber složku", command=self.ifolder_path)
-        self.ifind_path.grid(row=1, column=2)
+        self.driver_text = Label(self.right_frame, text="Vlož cestu pro driver:", bg="white")
+        self.driver_text.place(x=25, y=25)
 
-        self.output_text = Label(master, text="Vlož cestu pro uložení výsledku testování:")
-        self.output_text.grid(row=2, column=0)
+        self.dpath_field = Entry(self.right_frame, textvariable=self.dfolderPath, bd=4, width=40)
+        self.dpath_field.place(x=25, y=45)
 
-        self.opath_field = Entry(master, textvariable=self.ofolderPath)
-        self.opath_field.grid(row=2, column=1)
+        self.dfind_path = ttk.Button(self.right_frame, text="Vyber driver", command=self.dfolder_path)
+        self.dfind_path.place(x=285, y=44)
 
-        self.ofind_path = ttk.Button(master, text="Vyber složku", command=self.ofolder_path)
-        self.ofind_path.grid(row=2, column=2)
+        self.input_text = Label(self.right_frame, text="Vlož cestu s testovacími případy:", bg="white")
+        self.input_text.place(x=25, y=90)
 
-        self.start_test = ttk.Button(master, text="Spustit testování", command=self.start_test)
-        self.start_test.grid(row=3, column=1)
+        self.ipath_field = Entry(self.right_frame, textvariable=self.ifolderPath, bd=4, width=40)
+        self.ipath_field.place(x=25, y=110)
+
+        self.ifind_path = ttk.Button(self.right_frame, text="Vyber složku", command=self.ifolder_path)
+        self.ifind_path.place(x=285, y=109)
+
+        self.output_text = Label(self.right_frame, text="Vlož cestu pro uložení výsledku testování:", bg="white")
+        self.output_text.place(x=25, y=155)
+
+        self.opath_field = Entry(self.right_frame, textvariable=self.ofolderPath, bd=4, width=40)
+        self.opath_field.place(x=25, y=175)
+
+        self.ofind_path = ttk.Button(self.right_frame, text="Vyber složku", command=self.ofolder_path)
+        self.ofind_path.place(x=285, y=174)
+
+        self.start_test = ttk.Button(self.right_frame, text="Spustit testování", command=self.start_test)
+        self.start_test.place(x=110, y=235)
+
+        self.gui.mainloop()
         pass
 
     def ifolder_path(self):
@@ -54,6 +77,7 @@ class Screen():
         self.dir_files()
 
     def dfolder_path(self):
+        self.dfolderPath = StringVar()
         self.file_selected = filedialog.askopenfilename()
         self.dfolderPath.set(self.file_selected)
 
@@ -87,6 +111,4 @@ class Screen():
 #     s = Screen(gui)
 #
 #     gui.mainloop()
-s = Screen(gui)
-
-gui.mainloop()
+Screen()
