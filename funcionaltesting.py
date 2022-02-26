@@ -28,53 +28,44 @@ class Testcases():
                 # Looping over configuration
                 for step in configuration:
                     self.step = step
-                    print(step)
+
                     if "BROWSER" == step[0].upper():
                         self.result.append(self.step)
-                        if self.step[1] == "Chrome":
-                            self.driver = webdriver.Chrome(service=Service(path))
-
-                        elif self.step[1] == "Edge":
-                            self.driver = webdriver.Edge(service=Service(path))
-
-                        elif self.step[1] == "Safari":
-                            self.driver = webdriver.Safari(service=Service(path))
-                        pass
+                        self.choose_browser(path)
                     elif "URL" == step[0].upper():
                         self.result.append(self.step)
                         self.gourl()
-                        pass
                     elif "INPUT" in step[0].upper():
                         self.result.append(self.step)
                         self.input_text()
-                        pass
                     elif "BUTTON" in step[0].upper():
                         self.result.append(self.step)
                         self.clicks()
                     elif "BACK" in step[0].upper():
                         self.result.append(self.step)
-                        self.back(configuration)
+                        self.back()
                     elif "FORWARD" in step[0].upper():
                         self.result.append(self.step)
-                        self.forward(configuration)
+                        self.forward()
                     elif "CLEAR" in step[0].upper():
                         self.result.append(self.step)
                         self.clear()
-                        pass
+                    elif "WAIT" in step[0].upper():
+                        self.result.append(self.step)
+                        self.wait()
+                    elif "TITLE" in step[0].upper():
+                        self.result.append(self.step)
+                        self.check_title()
+                    elif "MAX" in step[0].upper():
+                        self.result.append(self.step)
+                        self.max()
+                    elif "CHECK" in step[0].upper():
+                        self.result.append(self.step)
+                        self.check_url()
                     elif "END" == step[0].upper():
                         self.result.append("Test uspěšně proveden!")
                         self.driver.quit()
                         break
-                    elif "WAIT" in step[0].upper():
-                        self.result.append(self.step)
-                        self.wait()
-                    # think about this
-                    elif "TITLE" in step[0].upper():
-                        self.check_title()
-                    elif "MAX" in step[0].upper():
-                        self.max()
-                        pass
-
                     # If there will be step which is not recognized then else runs -> result of it saved in result var.
                     else:
                         self.result.append(step[0])
@@ -85,13 +76,13 @@ class Testcases():
             # If in loop gonna be any issue program will run expect code
             except:
                 # If third step in config will be steps that cannot be processed then it will be save to result var.
-                if configuration[2][0].upper() not in ("WAIT", "BUTTON", "SEARCH", "TITLE", "MAX"):
+                if configuration[2][0].upper() not in ("WAIT", "BUTTON", "INPUT", "TITLE", "MAX", "CHECK"):
                     self.result.append("Krok v konfiguraci musí obsahovat krok, který se dá provést! "
                                        "Pro nápovědu použij dokumentaci.")
                     self.driver.quit()
 
                 # If will be error in any step of config then it will be saved in result var.
-                elif self.step[0].upper() not in ("BUTTON", "SEARCH"):
+                elif self.step[0].upper() not in ("BUTTON", "INPUT"):
                     self.result.append("V kroku " + self.step[0] + " nastala chyba! "
                                                                    "Pro správné spuštění oprav chybu."
                                                                    " Zkontroluj parametry."
@@ -104,6 +95,12 @@ class Testcases():
             pass
 
         self.append_to_result(opath)
+    def choose_browser(self, path):
+        if self.step[1] == "Chrome":
+            self.driver = webdriver.Chrome(service=Service(path))
+
+        elif self.step[1] == "Edge":
+            self.driver = webdriver.Edge(service=Service(path))
 
     # appending to excel(result file) result of test
     def append_to_result(self, opath):
@@ -169,14 +166,14 @@ class Testcases():
             self.result.append("Chyba v cestě lokátoru!")
             self.driver.quit()
 
-    def back(self, configuration):
-        for i in range(int(configuration[self.step][1])):
+    def back(self):
+        for i in range(int(self.step[1])):
             self.driver.back()
         pass
     pass
 
-    def forward(self, configuration):
-        for i in range(int(configuration[self.step][1])):
+    def forward(self):
+        for i in range(int(self.step[1])):
             self.driver.forward()
         pass
     pass
@@ -198,5 +195,10 @@ class Testcases():
         pass
     pass
 
+    def check_url(self):
+        if self.step[1] == self.driver.current_url:
+            self.result.append("URL je totožná!")
+        else:
+            self.result.append("URL není totožná!")
 
 # id(unique), name(usually unique), class(not always unique), Tag
