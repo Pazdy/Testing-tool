@@ -20,7 +20,7 @@ class Testcases():
             self.result.append("Konfigurace je prázdná, je potřeba vložit argumenty a parametry dle dokumentace!")
 
         # Step "Browser" must be first in config and URL must be second step in config
-        elif configuration[0][0] == "Browser" and configuration[1][0] == "URL":
+        elif configuration[0][0].upper() == "BROWSER" and configuration[1][0].upper() == "URL":
 
             # Try to loop over config
             try:
@@ -36,9 +36,6 @@ class Testcases():
 
                         elif self.step[1] == "Edge":
                             self.driver = webdriver.Edge(service=Service(path))
-
-                        elif self.step[1] == "Firefox":
-                            self.driver = webdriver.Firefox(service=Service(path))
 
                         elif self.step[1] == "Safari":
                             self.driver = webdriver.Safari(service=Service(path))
@@ -74,6 +71,9 @@ class Testcases():
                     # think about this
                     elif "TITLE" in step[0].upper():
                         self.check_title()
+                    elif "MAX" in step[0].upper():
+                        self.max()
+                        pass
 
                     # If there will be step which is not recognized then else runs -> result of it saved in result var.
                     else:
@@ -85,7 +85,7 @@ class Testcases():
             # If in loop gonna be any issue program will run expect code
             except:
                 # If third step in config will be steps that cannot be processed then it will be save to result var.
-                if configuration[2][0].upper() not in ("WAIT", "BUTTON", "SEARCH", "TITLE"):
+                if configuration[2][0].upper() not in ("WAIT", "BUTTON", "SEARCH", "TITLE", "MAX"):
                     self.result.append("Krok v konfiguraci musí obsahovat krok, který se dá provést! "
                                        "Pro nápovědu použij dokumentaci.")
                     self.driver.quit()
@@ -189,8 +189,14 @@ class Testcases():
 
     def check_title(self):
         if self.step[1] == self.driver.title:
-            print("Y")
+            self.result.append("Titulek souhlasí!")
         else:
-            print("N")
+            self.result.append("Titulek nesouhlasí!")
+
+    def max(self):
+        self.driver.maximize_window()
+        pass
+    pass
+
 
 # id(unique), name(usually unique), class(not always unique), Tag

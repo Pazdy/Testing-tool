@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 def e_import(file):
     # importing excel file with configuration
     df = pd.read_excel(file)

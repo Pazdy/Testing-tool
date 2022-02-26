@@ -6,18 +6,11 @@ import excelimport
 import funcionaltesting
 import pandas as pd
 
-
-
-
-
-
-
 class Screen():
     def __init__(self):
-
         self.gui = Tk()
         self.gui.geometry("800x300")
-        self.gui.title("Testing tool")
+        self.gui.title("Testovací nástroj pro funkční testování")
         self.gui.iconbitmap("logo.ico")
 
         self.dfolderPath = StringVar()
@@ -77,7 +70,6 @@ class Screen():
         self.dir_files()
 
     def dfolder_path(self):
-        self.dfolderPath = StringVar()
         self.file_selected = filedialog.askopenfilename()
         self.dfolderPath.set(self.file_selected)
 
@@ -96,7 +88,6 @@ class Screen():
                 self.files.append(f)
             else:
                 pass
-#        excelimport.excel_import(self.files)
 
     def start_test(self):
         self.create_result = pd.DataFrame().to_excel(excel_writer=self.ofolder_selected + "/result_file.xlsx")
